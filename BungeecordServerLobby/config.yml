@@ -1,0 +1,18 @@
+# MySQL server
+mysql:
+    driver: com.mysql.jdbc.Driver
+    host: jdbc:mysql://localhost
+    username: root
+    password: root
+    database: bungeecord_proxy_manager
+
+# Location to teleport players to on join
+spawn:
+    x: 0
+    y: 1
+    z: 0
+    yaw: 0
+    pitch: 0
+
+# Delay in seconds to kick afk players, set to 0 to disable
+afk-kick-delay: 240

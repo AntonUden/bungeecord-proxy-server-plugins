@@ -1,0 +1,6 @@
+mysql:
+    driver: org.gjt.mm.mysql.Driver
+    host: jdbc:mysql://localhost
+    username: root
+    password: root
+    database: bungeecord_proxy_manager

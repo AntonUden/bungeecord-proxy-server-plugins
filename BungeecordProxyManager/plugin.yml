@@ -1,0 +1,4 @@
+name: BungeecordProxyManager
+main: xyz.Zeeraa.bungeecordproxymanager.BungeecordProxyManager
+version: 1.0
+author: Zeeraa
