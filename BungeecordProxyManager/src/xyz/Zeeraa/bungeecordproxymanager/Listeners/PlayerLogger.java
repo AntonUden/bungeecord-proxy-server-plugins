@@ -5,6 +5,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
 import net.md_5.bungee.api.connection.ProxiedPlayer;
+import net.md_5.bungee.api.event.ChatEvent;
 import net.md_5.bungee.api.event.PostLoginEvent;
 import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.event.EventHandler;
@@ -53,14 +54,14 @@ public class PlayerLogger implements Listener {
 				}
 			}
 		}
-		
+
 		InetSocketAddress address = e.getPlayer().getPendingConnection().getVirtualHost();
 		String hostname = null;
-		if(address != null) {
+		if (address != null) {
 			hostname = address.getHostName().toLowerCase();
 		}
-		
-		if(oldUsername == null) {
+
+		if (oldUsername == null) {
 			try {
 				String sql = "INSERT INTO players (uuid, username, last_join_timestamp, last_join_ip, last_join_hostname) VALUES(?, ?, CURRENT_TIMESTAMP, ?, ?)";
 
@@ -81,12 +82,34 @@ public class PlayerLogger implements Listener {
 				String sql = "UPDATE players SET username = ?, last_join_timestamp = CURRENT_TIMESTAMP, last_join_ip = ?, last_join_hostname = ? WHERE uuid = ?";
 
 				PreparedStatement ps = DBConnection.connection.prepareStatement(sql);
-				
+
 				ps.setString(1, p.getName());
 				ps.setString(2, p.getAddress().getAddress().toString());
 				ps.setString(3, hostname);
 				ps.setString(4, p.getUniqueId().toString());
+
+				ps.executeUpdate();
+				ps.close();
+			} catch (Exception ex) {
+				ex.printStackTrace();
+			}
+		}
+	}
+
+	@EventHandler
+	public void onChat(ChatEvent e) {
+		if (e.getSender() instanceof ProxiedPlayer) {
+			ProxiedPlayer player = (ProxiedPlayer) e.getSender();
+
+			try {
+				String sql = "INSERT INTO `chat_log` (`server`, `uuid`, `username`, `message`) VALUES (?, ?, ?, ?);";
+				PreparedStatement ps = DBConnection.connection.prepareStatement(sql);
 				
+				ps.setString(1, player.getServer().getInfo().getName());
+				ps.setString(2, player.getUniqueId().toString());
+				ps.setString(3, player.getName());
+				ps.setString(4, e.getMessage());
+
 				ps.executeUpdate();
 				ps.close();
 			} catch (Exception ex) {

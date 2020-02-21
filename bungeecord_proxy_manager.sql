@@ -25,6 +25,15 @@ CREATE TABLE `blocked_domains` (
   `message` text COLLATE utf8_bin NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
+CREATE TABLE `chat_log` (
+  `id` int(10) UNSIGNED NOT NULL,
+  `server` text COLLATE utf8_bin NOT NULL,
+  `uuid` varchar(36) COLLATE utf8_bin NOT NULL,
+  `username` varchar(32) COLLATE utf8_bin NOT NULL,
+  `timestamp` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `message` text COLLATE utf8_bin NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+
 CREATE TABLE `name_history` (
   `id` int(10) UNSIGNED NOT NULL,
   `uuid` varchar(36) COLLATE utf8_bin NOT NULL,
@@ -65,6 +74,9 @@ ALTER TABLE `banned_players`
 ALTER TABLE `blocked_domains`
   ADD PRIMARY KEY (`id`);
 
+ALTER TABLE `chat_log`
+  ADD PRIMARY KEY (`id`);
+
 ALTER TABLE `name_history`
   ADD PRIMARY KEY (`id`);
 
@@ -82,6 +94,8 @@ ALTER TABLE `banned_players`
   MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 ALTER TABLE `blocked_domains`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+ALTER TABLE `chat_log`
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=32;
 ALTER TABLE `name_history`
   MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
 ALTER TABLE `players`
