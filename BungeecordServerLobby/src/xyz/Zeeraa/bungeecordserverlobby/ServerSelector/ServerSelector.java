@@ -104,6 +104,10 @@ public class ServerSelector implements Listener {
 			serverMenuPages.put(i, menuPage);
 		}
 	}
+	
+	public void reloadIcons() {
+		serverIcons.loadServerIcons(BungeecordServerLobby.getInstance().getServers());
+	}
 
 	public ServerSelector() {
 		serverIcons = new ServerIcons();

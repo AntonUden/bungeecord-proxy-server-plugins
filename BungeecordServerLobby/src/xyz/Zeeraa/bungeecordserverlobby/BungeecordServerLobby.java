@@ -5,10 +5,12 @@ import java.util.ArrayList;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
+import org.bukkit.command.defaults.ReloadCommand;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import xyz.Zeeraa.bungeecordserverlobby.Commands.ReloadServersCommand;
 import xyz.Zeeraa.bungeecordserverlobby.Listener.AfkKickListener;
 import xyz.Zeeraa.bungeecordserverlobby.Listener.KickJoiningPlayers;
 import xyz.Zeeraa.bungeecordserverlobby.Listener.MiscellaneousListeners;
@@ -58,6 +60,18 @@ public class BungeecordServerLobby extends JavaPlugin implements Listener {
 			p.kickPlayer(ChatColor.RED + "Internal server error. Please try again later");
 		}
 	}
+	
+	public boolean reloadServers() {
+		try {
+			servers = DBConnection.getServers();
+		} catch (Exception e) {
+			return false;
+		}
+		serverSelector.reloadIcons();
+		serverSelector.loadMenuPages();
+		
+		return true;
+	}
 
 	@Override
 	public void onEnable() {
@@ -92,13 +106,15 @@ public class BungeecordServerLobby extends JavaPlugin implements Listener {
 		this.getServer().getMessenger().registerIncomingPluginChannel(this, "proxymanager:pm", serverStatusManager);
 
 		this.getServer().clearRecipes();
+		
 		this.getServer().getPluginManager().registerEvents(this, this);
 		this.getServer().getPluginManager().registerEvents(new WeatherListener(), this);
 		this.getServer().getPluginManager().registerEvents(new MiscellaneousListeners(spawnLocation), this);
 		this.getServer().getPluginManager().registerEvents(serverSelector, this);
 		this.getServer().getPluginManager().registerEvents(serverStatusManager, this);
 		this.getServer().getPluginManager().registerEvents(afkKickListener, this);
-
+		
+		this.getCommand("reloadservers").setExecutor(new ReloadServersCommand());
 	}
 
 	@Override

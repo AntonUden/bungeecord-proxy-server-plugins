@@ -2,3 +2,8 @@ name: BungeecordServerLobby
 main: xyz.Zeeraa.bungeecordserverlobby.BungeecordServerLobby
 version: 1.0
 author: Zeeraa
+commands:
+  reloadservers:
+    description: reloads server list
+    usage: /reloadservers
+    aliases: [rsl, slrl, rlsl, serverlistreload]
