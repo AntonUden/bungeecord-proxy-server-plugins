@@ -11,12 +11,12 @@
 			<attribute name="maven.pomderived" value="true"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry combineaccessrules="false" kind="src" path="/BungeecordServerCommons"/>
 	<classpathentry kind="con" path="org.eclipse.m2e.MAVEN2_CLASSPATH_CONTAINER">
 		<attributes>
 			<attribute name="maven.pomderived" value="true"/>
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="lib" path="mysql-connector-java-5.1.48.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/BungeecordServerCommons"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

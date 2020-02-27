@@ -18,9 +18,18 @@ public class ConfigurationManager {
 	private HashMap<String, String> blockedDomains = new HashMap<String, String>();
 	
 	public boolean loadConfiguration() {
+		ArrayList<String> oldServers = new ArrayList<String>();
+		if(servers.size() != 0) {
+			for(ServerConfiguration sc : servers) {
+				oldServers.add(sc.getName());
+			}
+		}
+		
 		blockedDomains.clear();
 		servers.clear();
 		domainBinds.clear();
+		
+		
 		
 		try {
 			blockedDomains = DBConnection.getBlockedDomains();
@@ -44,6 +53,20 @@ public class ConfigurationManager {
 			return false;
 		}
 		
+		if(oldServers.size() != 0) {
+			for(ServerConfiguration sc : servers) {
+				oldServers.remove(sc.getName());
+			}
+		}
+		
+		if(oldServers.size() != 0) {
+			BLog.info("Removing " + oldServers.size() + " old servers from list");
+			for(String name : oldServers) {
+				BLog.info("Removing " + name);
+				this.unregisterServer(name);
+			}
+		}
+		
 		return true;
 	}
 	
@@ -65,6 +88,9 @@ public class ConfigurationManager {
 		return false;
 	}
 	
+	public boolean unregisterServer(String name) {
+		return ProxyServer.getInstance().getServers().remove(name) != null;
+	}
 	
 	public void registerServers() {
 		for(ServerConfiguration sc : servers) {

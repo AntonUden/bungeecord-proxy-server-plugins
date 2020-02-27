@@ -12,6 +12,7 @@ import net.md_5.bungee.config.ConfigurationProvider;
 import net.md_5.bungee.config.YamlConfiguration;
 import xyz.Zeeraa.bungeecordproxymanager.Anticheat.Anticheat;
 import xyz.Zeeraa.bungeecordproxymanager.BanManager.BanManager;
+import xyz.Zeeraa.bungeecordproxymanager.Commands.ProxyReloadCommand;
 import xyz.Zeeraa.bungeecordproxymanager.Configuration.ConfigurationManager;
 import xyz.Zeeraa.bungeecordproxymanager.Listeners.DomainListener;
 import xyz.Zeeraa.bungeecordproxymanager.Listeners.PlayerLogger;
@@ -94,6 +95,8 @@ public class BungeecordProxyManager extends Plugin implements Listener {
 			getProxy().getPluginManager().registerListener(this, new PluginMessageListener());
 			getProxy().getPluginManager().registerListener(this, banManager);
 			getProxy().getPluginManager().registerListener(this, anticheat);
+			
+			getProxy().getPluginManager().registerCommand(this, new ProxyReloadCommand());
 		} catch (IOException e) {
 			e.printStackTrace();
 			BLog.warning("Failed to enable BungeecordProxyManager. Kicking all connecting players");

@@ -1,7 +1,6 @@
 package xyz.Zeeraa.bungeecordproxymanager.BanManager;
 
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.UUID;
@@ -89,8 +88,6 @@ public class BanManager implements Listener {
 		}
 		
 		try {
-			BanInfo result = null;
-
 			String sql = "INSERT INTO `banned_players` (`active`, `uuid`, `username`, `message`, `expires`, `banned_at`, `comment`) VALUES ('1', ?, ?, ?, ?, CURRENT_TIMESTAMP, ?)";
 
 			PreparedStatement ps = DBConnection.connection.prepareStatement(sql);
