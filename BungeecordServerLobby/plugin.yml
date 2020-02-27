@@ -7,3 +7,7 @@ commands:
     description: reloads server list
     usage: /reloadservers
     aliases: [rsl, slrl, rlsl, serverlistreload]
+  serverlist:
+    description: shows the server list
+    usage: /serverlist
+    aliases: [sl, servers, menu, selector]

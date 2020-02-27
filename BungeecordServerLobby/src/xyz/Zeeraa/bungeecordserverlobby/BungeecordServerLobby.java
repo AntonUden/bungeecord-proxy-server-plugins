@@ -11,6 +11,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import xyz.Zeeraa.bungeecordserverlobby.Commands.ReloadServersCommand;
+import xyz.Zeeraa.bungeecordserverlobby.Commands.ServerListCommand;
 import xyz.Zeeraa.bungeecordserverlobby.Listener.AfkKickListener;
 import xyz.Zeeraa.bungeecordserverlobby.Listener.KickJoiningPlayers;
 import xyz.Zeeraa.bungeecordserverlobby.Listener.MiscellaneousListeners;
@@ -115,6 +116,7 @@ public class BungeecordServerLobby extends JavaPlugin implements Listener {
 		this.getServer().getPluginManager().registerEvents(afkKickListener, this);
 		
 		this.getCommand("reloadservers").setExecutor(new ReloadServersCommand());
+		this.getCommand("serverlist").setExecutor(new ServerListCommand());
 	}
 
 	@Override
