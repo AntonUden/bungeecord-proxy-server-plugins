@@ -13,8 +13,9 @@ public class ServerConfiguration {
 	private boolean requireDirectJoin;
 	private boolean showInServerList;
 	private String icon;
+	private boolean isModded;
 
-	public ServerConfiguration(int id, String name, String displayName, String prefix, String lore, String host, int port, boolean useDomain, String domain, boolean requireDirectJoin, boolean showInServerList, String icon) {
+	public ServerConfiguration(int id, String name, String displayName, String prefix, String lore, String host, int port, boolean useDomain, String domain, boolean requireDirectJoin, boolean showInServerList, String icon, boolean isModded) {
 		this.id = id;
 		this.name = name;
 		this.displayName = displayName;
@@ -27,6 +28,7 @@ public class ServerConfiguration {
 		this.requireDirectJoin = requireDirectJoin;
 		this.showInServerList = showInServerList;
 		this.icon = icon;
+		this.isModded = isModded;
 	}
 
 	public int getId() {
@@ -98,5 +100,9 @@ public class ServerConfiguration {
 			}
 		}
 		return false;
+	}
+	
+	public boolean isModded() {
+		return isModded;
 	}
 }

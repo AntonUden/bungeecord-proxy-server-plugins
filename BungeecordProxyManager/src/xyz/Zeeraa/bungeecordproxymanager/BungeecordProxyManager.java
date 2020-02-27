@@ -10,6 +10,7 @@ import net.md_5.bungee.api.plugin.Plugin;
 import net.md_5.bungee.config.Configuration;
 import net.md_5.bungee.config.ConfigurationProvider;
 import net.md_5.bungee.config.YamlConfiguration;
+import xyz.Zeeraa.bungeecordproxymanager.Anticheat.Anticheat;
 import xyz.Zeeraa.bungeecordproxymanager.BanManager.BanManager;
 import xyz.Zeeraa.bungeecordproxymanager.Configuration.ConfigurationManager;
 import xyz.Zeeraa.bungeecordproxymanager.Listeners.DomainListener;
@@ -17,12 +18,15 @@ import xyz.Zeeraa.bungeecordproxymanager.Listeners.PlayerLogger;
 import xyz.Zeeraa.bungeecordproxymanager.Listeners.PluginMessageListener;
 import xyz.zeeraa.BungeecordServerCommons.Database.DBConnection;
 import xyz.zeeraa.BungeecordServerCommons.Log.BLog;
+import xyz.zeeraa.BungeecordServerCommons.ModBlacklist.ModBlacklist;
 import xyz.Zeeraa.bungeecordproxymanager.Listeners.DenyJoinListener;
 
 public class BungeecordProxyManager extends Plugin implements Listener {
 	private Configuration configuration;
 	private ConfigurationManager configurationManager;
 	private BanManager banManager;
+	private Anticheat anticheat;
+	private ModBlacklist modBlacklist;
 	
 	private static BungeecordProxyManager instance;
 	
@@ -34,10 +38,17 @@ public class BungeecordProxyManager extends Plugin implements Listener {
 		return configurationManager;
 	}
 	
+	public Anticheat getAnticheat() {
+		return anticheat;
+	}
+	
+	public ModBlacklist getModBlacklist() {
+		return modBlacklist;
+	}
+	
 	@Override
 	public void onEnable() {
 		instance = this;
-		
 		configurationManager = new ConfigurationManager();
 		try {
 			if (!getDataFolder().exists()) {
@@ -71,6 +82,10 @@ public class BungeecordProxyManager extends Plugin implements Listener {
 		
 			banManager = new BanManager(this);
 			
+			modBlacklist = new ModBlacklist();
+			
+			anticheat = new Anticheat();
+			
 			getProxy().registerChannel("proxymanager:pm");
 			
 			BLog.info("Register listeners");
@@ -78,6 +93,7 @@ public class BungeecordProxyManager extends Plugin implements Listener {
 			getProxy().getPluginManager().registerListener(this, new DomainListener());
 			getProxy().getPluginManager().registerListener(this, new PluginMessageListener());
 			getProxy().getPluginManager().registerListener(this, banManager);
+			getProxy().getPluginManager().registerListener(this, anticheat);
 		} catch (IOException e) {
 			e.printStackTrace();
 			BLog.warning("Failed to enable BungeecordProxyManager. Kicking all connecting players");

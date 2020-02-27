@@ -13,11 +13,12 @@ import java.util.HashMap;
 import java.util.UUID;
 
 import xyz.zeeraa.BungeecordServerCommons.Database.Objects.BanInfo;
+import xyz.zeeraa.BungeecordServerCommons.Database.Objects.BlacklistedMod;
 import xyz.zeeraa.BungeecordServerCommons.Database.Objects.ServerConfiguration;
 
 public class DBConnection {
 	public static Connection connection;
-	
+
 	public static boolean init(String driver, String host, String user, String pass, String database) {
 		if (connection != null) {
 			return false;
@@ -32,10 +33,10 @@ public class DBConnection {
 			return false;
 		}
 	}
-	
+
 	public static HashMap<String, String> getBlockedDomains() throws SQLException {
 		HashMap<String, String> blockedDomains = new HashMap<String, String>();
-		
+
 		String sql = "SELECT * FROM `blocked_domains`";
 
 		PreparedStatement ps = DBConnection.connection.prepareStatement(sql);
@@ -44,10 +45,10 @@ public class DBConnection {
 		while (rs.next()) {
 			blockedDomains.put(rs.getString("domain").toLowerCase(), rs.getString("message"));
 		}
-		
+
 		rs.close();
 		ps.close();
-		
+
 		return blockedDomains;
 	}
 
@@ -60,21 +61,39 @@ public class DBConnection {
 		ResultSet rs = ps.executeQuery();
 		while (rs.next()) {
 			String domain = rs.getString("domain");
-			
-			if(domain != null) {
+
+			if (domain != null) {
 				domain = domain.toLowerCase();
 			}
-			
-			ServerConfiguration sc = new ServerConfiguration(rs.getInt("id"), rs.getString("name"), rs.getString("displayname"), rs.getString("prefix"), rs.getString("lore"), rs.getString("host"), rs.getInt("port"), rs.getBoolean("use_domain"), domain, rs.getBoolean("require_direct_join"), rs.getBoolean("show_in_server_list"), rs.getString("icon"));
-			
+
+			ServerConfiguration sc = new ServerConfiguration(rs.getInt("id"), rs.getString("name"), rs.getString("displayname"), rs.getString("prefix"), rs.getString("lore"), rs.getString("host"), rs.getInt("port"), rs.getBoolean("use_domain"), domain, rs.getBoolean("require_direct_join"), rs.getBoolean("show_in_server_list"), rs.getString("icon"), rs.getBoolean("is_modded"));
+
 			servers.add(sc);
 		}
-		
+
 		rs.close();
 		ps.close();
-		
+
 		return servers;
 	}
+
+	public static ArrayList<BlacklistedMod> getBlacklistedMods() throws SQLException {
+		ArrayList<BlacklistedMod> blacklistedMods = new ArrayList<BlacklistedMod>();
+		String sql = "SELECT * FROM `mod_blacklist`";
+
+		PreparedStatement ps = DBConnection.connection.prepareStatement(sql);
+
+		ResultSet rs = ps.executeQuery();
+		while (rs.next()) {
+			blacklistedMods.add(new BlacklistedMod(rs.getInt("id"), rs.getString("mod_name"), rs.getString("ban_message"), rs.getInt("ban_hours")));
+		}
+
+		rs.close();
+		ps.close();
+
+		return blacklistedMods;
+	}
+
 	
 	public static BanInfo getLongestActiveBan(UUID uuid) throws SQLException, ParseException {
 		BanInfo result = null;
@@ -107,7 +126,7 @@ public class DBConnection {
 
 		return result;
 	}
-	
+
 	public static boolean updateBanExpiration() {
 		try {
 			String sql = "UPDATE banned_players SET active = 0 WHERE expires < CURRENT_TIMESTAMP";
