@@ -16,7 +16,8 @@ CREATE TABLE `banned_players` (
   `username` text COLLATE utf8_bin NOT NULL COMMENT 'Only used to identify players',
   `message` text COLLATE utf8_bin NOT NULL,
   `expires` datetime DEFAULT NULL,
-  `banned_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
+  `banned_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `comment` text COLLATE utf8_bin
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
 CREATE TABLE `blocked_domains` (
@@ -32,6 +33,13 @@ CREATE TABLE `chat_log` (
   `username` varchar(32) COLLATE utf8_bin NOT NULL,
   `timestamp` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `message` text COLLATE utf8_bin NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+
+CREATE TABLE `mod_blacklist` (
+  `id` int(10) UNSIGNED NOT NULL,
+  `mod_name` varchar(255) COLLATE utf8_bin NOT NULL,
+  `ban_message` text COLLATE utf8_bin NOT NULL,
+  `ban_hours` int(10) UNSIGNED NOT NULL DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
 CREATE TABLE `name_history` (
@@ -64,7 +72,8 @@ CREATE TABLE `servers` (
   `domain` varchar(512) COLLATE utf8_bin DEFAULT NULL,
   `require_direct_join` tinyint(1) NOT NULL DEFAULT '0',
   `show_in_server_list` tinyint(1) NOT NULL DEFAULT '1',
-  `icon` text COLLATE utf8_bin
+  `icon` text COLLATE utf8_bin,
+  `is_modded` tinyint(1) NOT NULL DEFAULT '0'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
 
@@ -76,6 +85,10 @@ ALTER TABLE `blocked_domains`
 
 ALTER TABLE `chat_log`
   ADD PRIMARY KEY (`id`);
+
+ALTER TABLE `mod_blacklist`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `mod_name` (`mod_name`);
 
 ALTER TABLE `name_history`
   ADD PRIMARY KEY (`id`);
@@ -91,17 +104,19 @@ ALTER TABLE `servers`
 
 
 ALTER TABLE `banned_players`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
 ALTER TABLE `blocked_domains`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 ALTER TABLE `chat_log`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=32;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2242;
+ALTER TABLE `mod_blacklist`
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 ALTER TABLE `name_history`
   MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
 ALTER TABLE `players`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 ALTER TABLE `servers`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
