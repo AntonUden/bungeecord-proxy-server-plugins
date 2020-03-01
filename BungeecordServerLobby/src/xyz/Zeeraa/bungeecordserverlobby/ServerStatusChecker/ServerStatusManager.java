@@ -21,12 +21,12 @@ public class ServerStatusManager implements PluginMessageListener, Listener {
 	private HashMap<String, ServerStatus> serverStatus = new HashMap<String, ServerStatus>();
 
 	private boolean pingOnJoin = true;
-	
+
 	public ServerStatusManager() {
 		for (ServerConfiguration sc : BungeecordServerLobby.getInstance().getServers()) {
 			serverStatus.put(sc.getName(), new ServerStatus());
 		}
-		
+
 		Bukkit.getScheduler().scheduleSyncRepeatingTask(BungeecordServerLobby.getInstance(), new Runnable() {
 			@Override
 			public void run() {
@@ -35,7 +35,11 @@ public class ServerStatusManager implements PluginMessageListener, Listener {
 			}
 		}, 100L, 100L);
 	}
-	
+
+	/**
+	 * Requests updated server status from BungeeCord.
+	 * 
+	 */
 	public void update() {
 		Player player = Iterables.getFirst(Bukkit.getServer().getOnlinePlayers(), null);
 
@@ -49,27 +53,31 @@ public class ServerStatusManager implements PluginMessageListener, Listener {
 				out.writeUTF("serverstatus");
 				out.writeUTF(sc.getName());
 				player.sendPluginMessage(BungeecordServerLobby.getInstance(), "proxymanager:pm", out.toByteArray());
-			} catch(Exception e) {
+			} catch (Exception e) {
 				e.printStackTrace();
 			}
-			
-			if(serverStatus.get(sc.getName()).onlineStateCheckCountdown > 0) {
+
+			if (serverStatus.get(sc.getName()).onlineStateCheckCountdown > 0) {
 				serverStatus.get(sc.getName()).onlineStateCheckCountdown--;
 			} else {
-				if(serverStatus.get(sc.getName()).isOnline()) {
+				if (serverStatus.get(sc.getName()).isOnline()) {
 					serverStatus.get(sc.getName()).setOffline();
 				}
 			}
 		}
 	}
 
+	/**
+	 * @param server Name of server to get status for
+	 * @return {@link ServerStatus} or <code>null</code> if server does not exist
+	 */
 	public ServerStatus getServerStatus(String server) {
 		return serverStatus.get(server);
 	}
-	
+
 	@EventHandler
 	public void onPlayerJoin(PlayerJoinEvent e) {
-		if(pingOnJoin) {
+		if (pingOnJoin) {
 			pingOnJoin = false;
 			update();
 		}
@@ -77,35 +85,26 @@ public class ServerStatusManager implements PluginMessageListener, Listener {
 
 	@Override
 	public void onPluginMessageReceived(String channel, Player player, byte[] message) {
-		// proxymanager:pm -> serverstatus
-		// Structure:
-		// "proxymanager:pm"
-		// "serverstatus"
-		// server <String>
-		// success <Boolean>
-		// online <Boolean>
-		// playerCount <int>
-		// maxPlayers <int>
-		
 		if (channel.equals("proxymanager:pm")) {
 			ByteArrayDataInput in = ByteStreams.newDataInput(message);
 			String subchannel = in.readUTF();
 			if (subchannel.equals("serverstatus")) {
 				String server = in.readUTF();
-				
+
 				// request failed
-				if(!in.readBoolean()) {
-					//System.err.println("Request failure for server " + server);
+				if (!in.readBoolean()) {
+					// System.err.println("Request failure for server " + server);
 					return;
 				}
-				
+
 				boolean online = in.readBoolean();
 				int playercount = in.readInt();
 				int maxplayers = in.readInt();
-				
-				//System.out.println("c: " + channel + " sc: " + subchannel + " s: " + server + " o: " + online + " op: " + playercount + " mp: " + maxplayers);
-				
-				if(serverStatus.containsKey(server)) {
+
+				// System.out.println("c: " + channel + " sc: " + subchannel + " s: " + server +
+				// " o: " + online + " op: " + playercount + " mp: " + maxplayers);
+
+				if (serverStatus.containsKey(server)) {
 					serverStatus.get(server).set(playercount, maxplayers, ServerState.fromBoolean(online)).onlineStateCheckCountdown = 3;
 				}
 			}

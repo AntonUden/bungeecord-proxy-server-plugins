@@ -12,6 +12,11 @@ import net.md_5.bungee.event.EventHandler;
 import xyz.zeeraa.BungeecordServerCommons.Database.DBConnection;
 
 public class PlayerLogger implements Listener {
+	/**
+	 * Log player logins
+	 * 
+	 * @param e {@link PostLoginEvent}
+	 */
 	@EventHandler
 	public void onPostLogin(PostLoginEvent e) {
 		ProxiedPlayer p = e.getPlayer();
@@ -96,6 +101,11 @@ public class PlayerLogger implements Listener {
 		}
 	}
 
+	/**
+	 * Log chat message
+	 * 
+	 * @param e {@link ChatEvent}
+	 */
 	@EventHandler
 	public void onChat(ChatEvent e) {
 		if (e.getSender() instanceof ProxiedPlayer) {
@@ -104,7 +114,7 @@ public class PlayerLogger implements Listener {
 			try {
 				String sql = "INSERT INTO `chat_log` (`server`, `uuid`, `username`, `message`) VALUES (?, ?, ?, ?);";
 				PreparedStatement ps = DBConnection.connection.prepareStatement(sql);
-				
+
 				ps.setString(1, player.getServer().getInfo().getName());
 				ps.setString(2, player.getUniqueId().toString());
 				ps.setString(3, player.getName());

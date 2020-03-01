@@ -20,14 +20,36 @@ public class AfkKickListener implements Listener {
 	private HashMap<UUID, Integer> playerKickDelay = new HashMap<UUID, Integer>();
 	private int afkKickDelay;
 
+	/**
+	 * Get delay in seconds for players to be AFK kicked
+	 * 
+	 * @return AFK kick delay
+	 */
 	public int getAfkKickDelay() {
 		return afkKickDelay;
 	}
 
+	/**
+	 * Set delay in seconds for players to be AFK kicked
+	 * 
+	 * @param afkKickDelay AFK kick delay
+	 */
 	public void setAfkKickDelay(int afkKickDelay) {
 		this.afkKickDelay = afkKickDelay;
 	}
 
+	/**
+	 * Use default AFK kick delay of 240
+	 */
+	public AfkKickListener() {
+		this(240);
+	}
+
+	/**
+	 * Use custom AFK kick delay
+	 * 
+	 * @param afkKickDelay AFK kick delay
+	 */
 	public AfkKickListener(int afkKickDelay) {
 		this.afkKickDelay = afkKickDelay;
 
@@ -40,8 +62,8 @@ public class AfkKickListener implements Listener {
 						playerKickDelay.put(uuid, timeLeft - 1);
 					} else {
 						Player p = Bukkit.getServer().getPlayer(uuid);
-						
-						if(p == null) {
+
+						if (p == null) {
 							playerKickDelay.remove(uuid);
 						} else {
 							p.kickPlayer(ChatColor.RED + "You have been kicked for being afk");
@@ -52,6 +74,11 @@ public class AfkKickListener implements Listener {
 		}, 20L, 20L);
 	}
 
+	/**
+	 * Reset player AFK kick delay
+	 * 
+	 * @param e {@link PlayerMoveEvent}
+	 */
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
 	public void playerMoveEvent(PlayerMoveEvent e) {
 		Location movedFrom = e.getFrom();
@@ -60,12 +87,22 @@ public class AfkKickListener implements Listener {
 			playerKickDelay.put(e.getPlayer().getUniqueId(), afkKickDelay);
 		}
 	}
-	
+
+	/**
+	 * Add player from AFK kick delay list
+	 * 
+	 * @param e {@link PlayerJoinEvent}
+	 */
 	@EventHandler(priority = EventPriority.MONITOR)
 	public void onPlayerJoin(PlayerJoinEvent e) {
 		playerKickDelay.put(e.getPlayer().getUniqueId(), afkKickDelay);
 	}
 
+	/**
+	 * Remove player from AFK kick delay list
+	 * 
+	 * @param e {@link PlayerQuitEvent}
+	 */
 	@EventHandler(priority = EventPriority.MONITOR)
 	public void onPlayerQuit(PlayerQuitEvent e) {
 		playerKickDelay.remove(e.getPlayer().getUniqueId());

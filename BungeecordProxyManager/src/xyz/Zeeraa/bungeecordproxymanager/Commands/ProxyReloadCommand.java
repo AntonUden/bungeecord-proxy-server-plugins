@@ -8,7 +8,6 @@ import net.md_5.bungee.api.plugin.Command;
 import xyz.Zeeraa.bungeecordproxymanager.BungeecordProxyManager;
 
 public class ProxyReloadCommand extends Command {
-
 	public ProxyReloadCommand() {
 		super("proxyreload");
 	}

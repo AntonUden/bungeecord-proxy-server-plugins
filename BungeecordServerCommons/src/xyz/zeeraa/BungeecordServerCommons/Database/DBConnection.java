@@ -17,8 +17,21 @@ import xyz.zeeraa.BungeecordServerCommons.Database.Objects.BlacklistedMod;
 import xyz.zeeraa.BungeecordServerCommons.Database.Objects.ServerConfiguration;
 
 public class DBConnection {
+	/**
+	 * Instance of the {@link Connection} to the database
+	 */
 	public static Connection connection;
 
+	/**
+	 * Connects to the database
+	 * 
+	 * @param driver   driver to use
+	 * @param host     host to connect to
+	 * @param user     user name of the MySQL user
+	 * @param pass     password of the MySQL user
+	 * @param database name of the database to use
+	 * @return <code>true</code> on success or <code>false</code> on failure
+	 */
 	public static boolean init(String driver, String host, String user, String pass, String database) {
 		if (connection != null) {
 			return false;
@@ -34,6 +47,31 @@ public class DBConnection {
 		}
 	}
 
+	/**
+	 * Close the {@link Connection} to the database
+	 * 
+	 * @return <code>true</code> if the {@link Connection} was closed
+	 * @throws SQLException
+	 */
+	public static boolean close() throws SQLException {
+		if (connection == null) {
+			return false;
+		}
+
+		if (connection.isClosed()) {
+			return false;
+		}
+
+		connection.close();
+		return true;
+	}
+
+	/**
+	 * Fetches a list of blocked domains from the database
+	 * 
+	 * @return {@link HashMap} of blocked domains and message
+	 * @throws SQLException
+	 */
 	public static HashMap<String, String> getBlockedDomains() throws SQLException {
 		HashMap<String, String> blockedDomains = new HashMap<String, String>();
 
@@ -52,6 +90,12 @@ public class DBConnection {
 		return blockedDomains;
 	}
 
+	/**
+	 * Fetches a list of all servers from the database
+	 * 
+	 * @return {@link ArrayList} of {@link ServerConfiguration}
+	 * @throws SQLException
+	 */
 	public static ArrayList<ServerConfiguration> getServers() throws SQLException {
 		ArrayList<ServerConfiguration> servers = new ArrayList<ServerConfiguration>();
 		String sql = "SELECT * FROM `servers`";
@@ -77,6 +121,12 @@ public class DBConnection {
 		return servers;
 	}
 
+	/**
+	 * Fetches a list of all blacklisted mods from the database
+	 * 
+	 * @return {@link ArrayList} of {@link BlacklistedMod}
+	 * @throws SQLException
+	 */
 	public static ArrayList<BlacklistedMod> getBlacklistedMods() throws SQLException {
 		ArrayList<BlacklistedMod> blacklistedMods = new ArrayList<BlacklistedMod>();
 		String sql = "SELECT * FROM `mod_blacklist`";
@@ -94,7 +144,14 @@ public class DBConnection {
 		return blacklistedMods;
 	}
 
-	
+	/**
+	 * Gets the longest active ban for a player
+	 * 
+	 * @param uuid {@link UUID} of the player to check
+	 * @return {@link BanInfo} for the longest active ban
+	 * @throws SQLException
+	 * @throws ParseException
+	 */
 	public static BanInfo getLongestActiveBan(UUID uuid) throws SQLException, ParseException {
 		BanInfo result = null;
 
@@ -127,6 +184,11 @@ public class DBConnection {
 		return result;
 	}
 
+	/**
+	 * Sets all bans that has expired as inactive
+	 * 
+	 * @return <code>true</code> on success
+	 */
 	public static boolean updateBanExpiration() {
 		try {
 			String sql = "UPDATE banned_players SET active = 0 WHERE expires < CURRENT_TIMESTAMP";

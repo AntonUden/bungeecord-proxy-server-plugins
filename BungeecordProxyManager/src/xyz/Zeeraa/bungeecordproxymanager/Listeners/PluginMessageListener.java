@@ -63,7 +63,6 @@ public class PluginMessageListener implements Listener {
 								out.writeInt(0);
 								out.writeInt(0);
 							} else {
-								//System.out.println("ping ok: o: " + result.getPlayers().getOnline() + " m: " + result.getPlayers().getMax() + " ts " + result.toString());
 								out.writeUTF("serverstatus");
 								out.writeUTF(serverName);
 								out.writeBoolean(true);
@@ -71,7 +70,7 @@ public class PluginMessageListener implements Listener {
 								out.writeInt(result.getPlayers().getOnline());
 								out.writeInt(result.getPlayers().getMax());
 							}
-							
+
 							send.getServer().sendData("proxymanager:pm", out.toByteArray());
 						}
 					});

@@ -11,7 +11,9 @@ import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.Action;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -33,6 +35,26 @@ public class ServerSelector implements Listener {
 
 	private int serverStartSlot = 18;
 
+	public ServerSelector() {
+		serverIcons = new ServerIcons();
+
+		serverIcons.loadServerIcons(BungeecordServerLobby.getInstance().getServers());
+
+		loadMenuPages();
+
+		Bukkit.getScheduler().scheduleSyncRepeatingTask(BungeecordServerLobby.getInstance(), new Runnable() {
+			@Override
+			public void run() {
+				if (Bukkit.getOnlinePlayers().size() > 0) {
+					updateStatus();
+				}
+			}
+		}, 20L, 20L);
+	}
+
+	/**
+	 * Creates all menu pages or update pages if already loaded
+	 */
 	public void loadMenuPages() {
 		serverMenuPages.clear();
 
@@ -104,28 +126,19 @@ public class ServerSelector implements Listener {
 			serverMenuPages.put(i, menuPage);
 		}
 	}
-	
+
+	/**
+	 * Reloads all server icons from server list
+	 */
 	public void reloadIcons() {
 		serverIcons.loadServerIcons(BungeecordServerLobby.getInstance().getServers());
 	}
 
-	public ServerSelector() {
-		serverIcons = new ServerIcons();
-
-		serverIcons.loadServerIcons(BungeecordServerLobby.getInstance().getServers());
-
-		loadMenuPages();
-
-		Bukkit.getScheduler().scheduleSyncRepeatingTask(BungeecordServerLobby.getInstance(), new Runnable() {
-			@Override
-			public void run() {
-				if (Bukkit.getOnlinePlayers().size() > 0) {
-					updateStatus();
-				}
-			}
-		}, 20L, 20L);
-	}
-
+	/**
+	 * Updates all server icons with data from ServerStatusManager. To reload all
+	 * server data from the database use
+	 * {@link BungeecordServerLobby#reloadServers()}
+	 */
 	public void updateStatus() {
 		for (Integer i : serverMenuPages.keySet()) {
 			ServerMenuHolder smh = (ServerMenuHolder) serverMenuPages.get(i).getHolder();
@@ -159,11 +172,20 @@ public class ServerSelector implements Listener {
 
 	}
 
-	public void show(Player p) {
-		this.show(p, 1);
+	/**
+	 * Shows page 1 of the menu to a player
+	 * 
+	 * @param player the player to show the menu to
+	 */
+	public void show(Player player) {
+		this.show(player, 1);
 	}
 
-	public void show(Player p, int page) {
+	/**
+	 * @param player the player to show the menu to
+	 * @param page   the page of the menu to show
+	 */
+	public void show(Player player, int page) {
 		if (page > pages) {
 
 			page = 1;
@@ -172,9 +194,10 @@ public class ServerSelector implements Listener {
 		if (page < 1) {
 			page = 1;
 		}
-		p.openInventory(serverMenuPages.get(page));
+		player.openInventory(serverMenuPages.get(page));
 	}
 
+	/* ---------- Listeners ---------- */
 	@EventHandler
 	public void onClick(InventoryClickEvent e) {
 		// e.getWhoClicked().sendMessage(e.getInventory().getHolder().getClass().getName());
@@ -228,6 +251,20 @@ public class ServerSelector implements Listener {
 
 						player.sendPluginMessage(BungeecordServerLobby.getInstance(), "BungeeCord", out.toByteArray());
 					}
+				}
+			}
+		}
+	}
+
+	@EventHandler
+	public void onPlayerInteract(PlayerInteractEvent e) {
+		if (e.getAction() == Action.RIGHT_CLICK_AIR || e.getAction() == Action.RIGHT_CLICK_BLOCK) {
+			if (e.getItem() != null) {
+				Player p = e.getPlayer();
+
+				if (e.getItem().getType() == Material.COMPASS) {
+					this.show(p);
+					p.playSound(p.getLocation(), Sound.ORB_PICKUP, 1F, 1F);
 				}
 			}
 		}

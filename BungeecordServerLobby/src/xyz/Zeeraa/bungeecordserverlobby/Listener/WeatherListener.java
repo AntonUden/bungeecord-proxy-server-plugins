@@ -8,7 +8,7 @@ public class WeatherListener implements Listener {
 	@EventHandler
 	public void onWeatherChange(WeatherChangeEvent e) {
 		// Cancel rain
-		if(e.toWeatherState()) {
+		if (e.toWeatherState()) {
 			e.setCancelled(true);
 		}
 	}

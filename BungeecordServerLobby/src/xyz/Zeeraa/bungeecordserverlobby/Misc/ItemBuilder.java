@@ -21,7 +21,7 @@ public class ItemBuilder {
 	public ItemBuilder(Material material, int ammount) {
 		this(new ItemStack(material, ammount), false);
 	}
-	
+
 	public ItemBuilder(ItemStack itemStack) {
 		this(itemStack, false);
 	}
@@ -83,12 +83,12 @@ public class ItemBuilder {
 		meta.setDisplayName(name);
 		return this;
 	}
-	
+
 	public ItemBuilder setData(MaterialData data) {
 		item.setData(data);
 		return this;
 	}
-	
+
 	public ItemBuilder setDurability(short durability) {
 		item.setDurability(durability);
 		return this;
