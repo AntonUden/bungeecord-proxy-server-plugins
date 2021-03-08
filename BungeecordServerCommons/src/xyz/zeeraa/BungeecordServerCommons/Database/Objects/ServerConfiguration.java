@@ -17,8 +17,9 @@ public class ServerConfiguration {
 	private boolean showInServerList;
 	private String icon;
 	private boolean isModded;
+	private boolean fallbackIfJoinFails;
 
-	public ServerConfiguration(int id, String name, String displayName, String prefix, String lore, String host, int port, boolean useDomain, String domain, boolean requireDirectJoin, boolean showInServerList, String icon, boolean isModded) {
+	public ServerConfiguration(int id, String name, String displayName, String prefix, String lore, String host, int port, boolean useDomain, String domain, boolean requireDirectJoin, boolean showInServerList, String icon, boolean isModded, boolean fallbackIfJoinFails) {
 		this.id = id;
 		this.name = name;
 		this.displayName = displayName;
@@ -32,6 +33,7 @@ public class ServerConfiguration {
 		this.showInServerList = showInServerList;
 		this.icon = icon;
 		this.isModded = isModded;
+		this.fallbackIfJoinFails = fallbackIfJoinFails;
 	}
 
 	/**
@@ -184,5 +186,9 @@ public class ServerConfiguration {
 	 */
 	public boolean isModded() {
 		return isModded;
+	}
+	
+	public boolean isFallbackIfJoinFails() {
+		return fallbackIfJoinFails;
 	}
 }
